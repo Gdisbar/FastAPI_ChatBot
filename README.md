@@ -34,6 +34,9 @@ current as .txt but can be JSON - `sample_transcript.json`
 curl -X POST http://127.0.0.1:8000/analyze/file \
   -F "file=@sample_transcript.txt"
 ```
+
+## Internal Working
+
 ```
     Client
   │
@@ -63,7 +66,86 @@ curl -X POST http://127.0.0.1:8000/analyze/file \
           │
           ▼
        crud.py ──────────────────────────────► SQLite
+
 ```
+
+### A. Live streaming chat
+
+When a user sends: "Hey, my internet has been down for 2 hours!"
+
+the system does two different LLM operations:
+
+1. Analyze the message
+
+    What is the user's intent?
+    What stage of the conversation are they in?
+    How confident is the model?
+
+2. Generate and stream the chatbot's response
+
+    The reply is sent token-by-token to the frontend.
+
+
+```
+
+User message
+     │
+     ▼
+LLM Analysis
+     │
+     ├── intent = complaint
+     ├── stage = needs_analysis
+     ├── confidence = 95
+     └── reasoning = "User reports a service problem."
+     │
+     ▼
+Save user message + metadata
+     │
+     ▼
+LLM Response Generation
+     │
+     ▼
+Stream tokens to client
+     │
+     ▼
+Save complete assistant response
+
+```
+
+### B. Transcript analysis
+
+You can upload a .json, .txt, or .md conversation transcript.
+```
+user: I want to upgrade my plan.
+assistant: Sure. What is your current plan?
+user: I am on the Basic plan.
+assistant: We have Pro and Premium.
+user: Premium is too expensive.
+```
+
+**The Application**
+
+```
+Upload
+   ↓
+Parse file
+   ↓
+Convert into structured messages
+   ↓
+Send complete transcript to LLM
+   ↓
+LLM identifies:
+   • overall dialogue flow
+   • intent of each turn
+   • dialogue stage of each turn
+   • confidence
+   • reasoning
+   ↓
+Store results in DB
+   ↓
+Return analysis
+```
+
 | Concern | Pattern | Why it matters |
 |---|---|---|
 | **Async driver** | `sqlite+aiosqlite://` + `create_async_engine` + `AsyncSession` | Non-blocking I/O under load |
