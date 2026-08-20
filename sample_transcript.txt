@@ -1,0 +1,7 @@
+user: Hi, I want to upgrade my plan.
+assistant: Sure! May I know your current plan?
+user: I am on the Basic $20 plan.
+assistant: We have Pro for $40 and Premium for $80.
+user: Hmm, $80 feels steep. Any discount?
+assistant: I can offer 10% off on Premium today.
+user: Deal. Let us proceed.
