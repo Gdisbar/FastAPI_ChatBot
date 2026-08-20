@@ -21,6 +21,7 @@ ssh-keys.pub
 
 # Ignore Alternate Backup Versions
 backups/
+FastAPI_ChatBot-packed-2026-08-20.md
 
 # Ignore Unverified Codes
 test*
