@@ -34,7 +34,36 @@ current as .txt but can be JSON - `sample_transcript.json`
 curl -X POST http://127.0.0.1:8000/analyze/file \
   -F "file=@sample_transcript.txt"
 ```
-
+```
+    Client
+  │
+  ├── POST /chat/stream
+  │       │
+  │       ▼
+  │   main.py
+  │       │
+  │       ├── Load conversation history ─────► crud.py ─► SQLite
+  │       │
+  │       ├── Analyze user message ─────────► ai_service.py ─► Groq LLM
+  │       │
+  │       ├── Save analyzed user message ───► crud.py ─► SQLite
+  │       │
+  │       ├── Stream AI response ───────────► ai_service.py ─► Groq LLM
+  │       │
+  │       └── Save complete AI response ────► crud.py ─► SQLite
+  │
+  ├── POST /analyze/file
+  │       │
+  │       ├── Validate uploaded file
+  │       ├── Parse transcript ─────────────► transcript_parser.py
+  │       ├── Analyze complete dialogue ────► ai_service.py ─► Groq
+  │       └── Save analyzed turns ──────────► SQLite
+  │
+  └── CRUD APIs
+          │
+          ▼
+       crud.py ──────────────────────────────► SQLite
+```
 | Concern | Pattern | Why it matters |
 |---|---|---|
 | **Async driver** | `sqlite+aiosqlite://` + `create_async_engine` + `AsyncSession` | Non-blocking I/O under load |
