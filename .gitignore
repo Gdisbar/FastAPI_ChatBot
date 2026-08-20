@@ -1,0 +1,26 @@
+#Ignore environment variables
+.env
+
+# Ignore virtual environment directory
+venv/
+.venv/
+
+# Ignore checkpoints
+.ipynb_checkpoints/
+
+# Ignore cache
+__pycache__/
+.pytest_cache/
+
+# Ignore Datasets
+tests/data/
+
+# Ignore SSH-Keys
+ssh-keys
+ssh-keys.pub
+
+# Ignore Alternate Backup Versions
+backups/
+
+# Ignore Unverified Codes
+test*
